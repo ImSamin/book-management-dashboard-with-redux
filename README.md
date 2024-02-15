@@ -4,7 +4,7 @@ Welcome to the Book Management Dashboard application! This README will guide you
 
 ## Live URL
 
-You can access the live version of the application at [Live Demo](https://l2b2-full-stack-a5-client-side-im-samin-jly2.vercel.app).
+You can access the live version of the application at [Live Demo](https://book-management-dashboard-with-redux.vercel.app).
 
 ## Features
 
