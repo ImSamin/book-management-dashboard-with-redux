@@ -45,6 +45,7 @@ export const ProductsTable: React.FC = () => {
   const [genre, setGenre] = useState<string>("");
   const [format, setFormat] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const [deletePost] = useDeleteProductMutation();
   const { data, isLoading } = useGetProductsQuery({
@@ -53,6 +54,25 @@ export const ProductsTable: React.FC = () => {
     format: format || undefined,
     language: language || undefined,
   });
+
+  const handleCheckboxClick = (id: string) => {
+    const selectedIndex = selectedItems.indexOf(id);
+    if (selectedIndex === -1) {
+      setSelectedItems([...selectedItems, id]); 
+    } else {
+      const updatedSelection = [...selectedItems];
+      updatedSelection.splice(selectedIndex, 1); 
+      setSelectedItems(updatedSelection);
+    }
+  };
+
+  const handleBulkDelete = () => {
+    selectedItems.forEach((id) => {
+      deletePost(id);
+    });
+    setSelectedItems([]); 
+    toast.success("delete completed successfully");
+  };
 
   const dispatch = useAppDispatch();
   const products = useAppSelector((state) => state.products.products);
@@ -143,7 +163,6 @@ export const ProductsTable: React.FC = () => {
               <option value="paperback">Paperback</option>
               <option value="hardcover">Hard Cover</option>
               <option value="e-book">E-Book</option>
-             
             </select>
           </div>
 
@@ -172,6 +191,19 @@ export const ProductsTable: React.FC = () => {
         </div>
       </CardHeader>
       <CardBody placeholder={""} className="overflow-scroll px-0">
+        {selectedItems.length > 0 && (
+          <div className="  m-5 flex justify-center">
+            <Button
+              placeholder={""}
+              color="red"
+              size="sm"
+              onClick={() => handleBulkDelete()}
+              disabled={selectedItems.length === 0} // Disable button if no items are selected
+            >
+              Delete Selected Items
+            </Button>
+          </div>
+        )}
         <table className="mt-4 w-full min-w-max table-auto text-left">
           <thead>
             <tr>
@@ -214,7 +246,10 @@ export const ProductsTable: React.FC = () => {
                 return (
                   <tr key={ISBN}>
                     <td className={classes}>
-                      <Checkbox crossOrigin={""} />
+                      <Checkbox
+                        crossOrigin={""}
+                        onClick={() => handleCheckboxClick(id)}
+                      />
                     </td>
                     <td className={classes}>
                       <div className="flex items-center gap-3">
